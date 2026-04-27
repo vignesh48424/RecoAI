@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecoAI — Movie Recommendation Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            color: white;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            color: #e50914;
+            text-shadow: 0 0 20px rgba(229,9,20,0.5);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #aaa;
+            margin-top: 10px;
+        }
+
+        /* Search Section */
+        .search-section {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .search-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .search-box h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #e50914;
+        }
+
+        select {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            font-size: 1em;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        select option {
+            background: #302b63;
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #e50914;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #ff1a1a;
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(229,9,20,0.5);
+        }
+
+        /* Results Section */
+        .results-section {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px 40px;
+        }
+
+        .results-title {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #e50914;
+            text-align: center;
+        }
+
+        .movie-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .movie-card:hover {
+            background: rgba(229,9,20,0.2);
+            border-color: #e50914;
+            transform: translateX(5px);
+        }
+
+        .movie-rank {
+            font-size: 2em;
+            font-weight: bold;
+            color: #e50914;
+            width: 50px;
+        }
+
+        .movie-info {
+            flex: 1;
+            padding: 0 20px;
+        }
+
+        .movie-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: white;
+        }
+
+        .movie-score {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        .score-bar {
+            width: 150px;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e50914, #ff6b6b);
+            border-radius: 4px;
+        }
+
+        /* Error */
+        .error {
+            text-align: center;
+            color: #e50914;
+            font-size: 1.2em;
+            padding: 20px;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px auto;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px 25px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #e50914;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #aaa;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+            font-size: 0.9em;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>🎬 RecoAI</h1>
+        <p>Intelligent Movie Recommendation Engine — Powered by Machine Learning</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+        <div class="stat-box">
+            <div class="stat-number">450+</div>
+            <div class="stat-label">Movies</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">268</div>
+            <div class="stat-label">Users</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Coverage</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">1.07</div>
+            <div class="stat-label">RMSE Score</div>
+        </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-section">
+        <div class="search-box">
+            <h2>🎯 Get Personalized Recommendations</h2>
+            <form method="POST">
+                <select name="movie" required>
+                    <option value="">-- Select a Movie --</option>
+                    {% for movie in movies %}
+                    <option value="{{ movie }}"
+                        {% if movie == selected_movie %}selected{% endif %}>
+                        {{ movie }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <button type="submit">🚀 Get Recommendations</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Error -->
+    {% if error %}
+    <div class="error">❌ {{ error }}</div>
+    {% endif %}
+
+    <!-- Results -->
+    {% if recommendations %}
+    <div class="results-section">
+        <h2 class="results-title">
+            🎬 Top 10 Recommendations for "{{ selected_movie }}"
+        </h2>
+
+        {% for rec in recommendations %}
+        <div class="movie-card">
+            <div class="movie-rank">#{{ loop.index }}</div>
+            <div class="movie-info">
+                <div class="movie-title">{{ rec.title }}</div>
+                <div class="movie-score">Similarity Score: {{ rec.score }}</div>
+            </div>
+            <div class="score-bar">
+                <div class="score-fill"
+                     style="width: {{ (rec.score * 100)|int }}%">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>🤖 RecoAI — Built by Vignesh | Powered by Python, Scikit-learn & Flask</p>
+        <p>Similar to Netflix & Amazon Recommendation Systems</p>
+    </div>
+
+</body>
+</html>
